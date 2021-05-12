@@ -28,3 +28,48 @@ function swapItems(index1, index2) {
         }
     }
 }
+
+function initDragAndDrop() {
+    const draggableItemsContainer = document.querySelector('ul');
+
+    draggableItemsContainer.addEventListener('dragstart', (e) => {
+        e.target.classList.add('dragged');
+    });
+
+    draggableItemsContainer.addEventListener('dragend', (e) => {
+        e.target.classList.remove('dragged');
+    });
+
+    draggableItemsContainer.addEventListener('dragenter', (e) => {
+        const ItemOnTheMove = document.querySelector('.dragged');
+        if (e.target.dataset.index && e.target.dataset.index !== ItemOnTheMove.dataset.index) {
+            e.target.classList.add('dragover');
+        }
+    });
+
+    draggableItemsContainer.addEventListener('dragleave', (e) => {
+        if (e.target.dataset.index) {
+            e.target.classList.remove('dragover');
+        }
+    });
+
+    draggableItemsContainer.addEventListener('dragstart', (e) => {
+        e.dataTransfer.setData('text/plain', e.target.dataset.index);
+        e.target.classList.add('dragged');
+    });
+
+    draggableItemsContainer.addEventListener('dragover', (e) => {
+        e.preventDefault();
+    });
+
+    draggableItemsContainer.addEventListener('drop', (e) => {
+        e.preventDefault();
+        e.target.classList.remove('dragover');
+        const index1 = e.dataTransfer.getData('text/plain');
+        const index2 = e.target.dataset.index;
+        
+        if (index1 && index2) {
+            swapItems(index1, index2);
+        }
+    });
+}
