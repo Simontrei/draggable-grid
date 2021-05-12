@@ -73,3 +73,57 @@ function initDragAndDrop() {
         }
     });
 }
+
+function initTouch() {
+    const draggableItemsContainer = document.querySelector('ul');
+    let initialX = 0;
+    let initialY = 0;
+    let lastX = 0;
+    let lastY = 0;
+
+    draggableItemsContainer.addEventListener('touchstart', (e) => {
+        if(e.target.tagName == 'li'){
+            initialX = e.touches[0].clientX;
+            initialY = e.touches[0].clientY;
+            e.target.classList.add('dragged');
+        }
+    });
+
+    draggableItemsContainer.addEventListener('touchmove', (e) => {
+        if(e.target.tagName == 'li'){
+            const x = e.touches[0].clientX - initialX;
+            const y = e.touches[0].clientY - initialY;
+            lastX = e.touches[0].clientX;
+            lastY = e.touches[0].clientY;
+            e.target.style.transform = "translate(" + x + "px, " + y + "px)";
+
+            const touchmoveEvent = document.elementsFromPoint(lastX, lastY);
+        
+            if(touchmoveEvent.length > 4){
+                if(!touchmoveEvent[1].classList.contains('dragover')){
+                    touchmoveEvent[1].classList.add('dragover');
+                }
+            } 
+
+            else {
+                let list = document.getElementsByClassName('dragover');
+                if(list.length > 0){
+                    list[0].classList.remove('dragover');
+                }
+            }
+        }
+    });
+        
+    draggableItemsContainer.addEventListener('touchend', (e) => {
+        if(e.target.tagName == 'li'){
+            const touchmoveEvent = document.elementsFromPoint(lastX, lastY);
+            if (touchmoveEvent.length > 1 && touchmoveEvent[1].hasAttribute('draggable')) {
+                swapItems(e.target.dataset.index, touchmoveEvent[1].dataset.index);
+            }
+
+            e.target.style.transform = "";
+            e.target.classList.remove('dragged');
+            touchmoveEvent[1].classList.remove('dragover');
+        }
+    });
+}
