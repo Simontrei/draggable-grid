@@ -127,3 +127,26 @@ function initTouch() {
         }
     });
 }
+
+function findMobile() {
+    const checkMobile = [
+        /Android/i,
+        /webOS/i,
+        /iPhone/i,
+        /iPad/i,
+        /iPod/i,
+        /BlackBerry/i,
+        /Windows Phone/i
+    ];
+
+    return checkMobile.some((checkMobileItem) => {
+        return navigator.userAgent.match(checkMobileItem);
+    });
+}
+
+
+if (findMobile()) {
+    initTouch();
+} else {
+    initDragAndDrop();
+}
