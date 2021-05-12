@@ -1,32 +1,30 @@
-const draggableItemsContainer = document.querySelector('ul');
+function swapItems(index1, index2) {
+    const ElementOne = document.querySelector("[data-index='" + index1 + "']");
+    const ElementTwo = document.querySelector("[data-index='" + index2 + "']");
+    let SiblingOne = ElementOne.previousElementSibling;
+    let SiblingTwo = ElementTwo.previousElementSibling;
+ 
+    if (!SiblingOne) {
+        const parent = ElementOne.parentElement;
+        ElementTwo.insertAdjacentElement('afterend', ElementOne); //After the element, so after the targetElement itself
+        parent.insertAdjacentElement('afterbegin', ElementTwo); //After the begin of the element (as first child)
+                                                                //so just inside the targetElement and before its first child
+    } 
 
-draggableItemsContainer.addEventListener('dragstart', (e) => {
-    e.target.classList.add('dragged');
-    e.dataTransfer.setData('text/plain', e.target.dataset.index);
-});
+    else if (!SiblingTwo) {
+        const parent = ElementTwo.parentElement;
+        ElementOne.insertAdjacentElement('afterend', ElementTwo);
+        parent.insertAdjacentElement('afterbegin', ElementOne);
+    } 
 
-draggableItemsContainer.addEventListener('dragend', (e) => {
-    e.target.classList.remove('dragged');
-});
-
-draggableItemsContainer.addEventListener('dragenter', (e) => {
-    if (e.target.dataset && e.target.dataset.index) {
-    e.target.classList.add('dragover');
+    else { 
+        if (SiblingOne === ElementTwo) {
+            ElementOne.insertAdjacentElement('afterend', ElementTwo);
+        } else if (SiblingTwo === ElementOne) {
+            ElementOne.insertAdjacentElement('beforebegin', ElementTwo); //Before the element, so before the targetElement itself
+        } else {
+            ElementOne.insertAdjacentElement('afterend', ElementTwo);
+            SiblingTwo.insertAdjacentElement('afterend', ElementOne);
+        }
     }
-});
-
-draggableItemsContainer.addEventListener('dragleave', (e) => {
-    if (e.target.dataset && e.target.dataset.index) {
-    e.target.classList.remove('dragover');
-    }
-});
-
-draggableItemsContainer.addEventListener('dragover', (e) => {
-    e.preventDefault();
-});
-
-draggableItemsContainer.addEventListener('drop', (e) => {
-    e.target.classList.remove('dragover');
-    console.log(e.dataTransfer.getData('text/plain'));
-    console.log(e.target.dataset.index);
-});
+}
